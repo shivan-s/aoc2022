@@ -12,12 +12,20 @@ INPUT_TXT = os.path.join(os.path.dirname(__file__), "input.txt")
 
 def compute(s: str) -> int:
     """Compute.
+        From part 1:
         1. Turn input into list of numbers e.g. ("1000", "2000", "3000", "")
         2. Loop through list and group together numbers with an empty element \
                 separate elves.
         3. Calculate total calories
         4. Return the max calories
+
+        Part 2:
+        1. Sort the list
+        2. Find top 3
+        3. Sum the top 3
     """
+
+    # part 1
     elves_calories = []
     total = 0
     for elem in s.split("\n"):
@@ -26,7 +34,9 @@ def compute(s: str) -> int:
             total = 0
         else:
             total += int(elem)
-    return max(elves_calories)
+
+    # part 2
+    return sum(sorted(elves_calories, reverse=True)[:3])
 
 
 INPUT_S = """\
@@ -45,7 +55,7 @@ INPUT_S = """\
 
 10000
 """
-EXPECTED = 24000
+EXPECTED = 45000
 
 
 @pytest.mark.parametrize(
