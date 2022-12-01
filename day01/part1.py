@@ -7,7 +7,7 @@ import pytest
 
 import support
 
-INPUT_TXT = os.path.join(os.path.dirname(__file__), "input.txt")
+INPUT_TXT = os.path.join(os.path.dirname(__file__), 'input.txt')
 
 
 def compute(s: str) -> int:
@@ -20,8 +20,8 @@ def compute(s: str) -> int:
     """
     elves_calories = []
     total = 0
-    for elem in s.split("\n"):
-        if elem == "":
+    for elem in s.split('\n'):
+        if elem == '':
             elves_calories.append(total)
             total = 0
         else:
@@ -49,7 +49,7 @@ EXPECTED = 24000
 
 
 @pytest.mark.parametrize(
-    ("input_s", "expected"),
+    ('input_s', 'expected'),
     ((INPUT_S, EXPECTED),),
 )
 def test(input_s: str, expected: int) -> None:
@@ -58,7 +58,7 @@ def test(input_s: str, expected: int) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("data_file", nargs="?", default=INPUT_TXT)
+    parser.add_argument('data_file', nargs='?', default=INPUT_TXT)
     args = parser.parse_args()
 
     with open(args.data_file) as f, support.timing():
@@ -67,5 +67,5 @@ def main() -> int:
     return 0
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     raise SystemExit(main())
