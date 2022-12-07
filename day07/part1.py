@@ -7,51 +7,51 @@ import pytest
 
 import support
 
-INPUT_TXT = os.path.join(os.path.dirname(__file__), "input.txt")
+INPUT_TXT = os.path.join(os.path.dirname(__file__), 'input.txt')
 
 
 def compute(s: str) -> int:
     """Part 1.
 
     1. parse line to determine input vs output
-    2. walk through directories and calculate the size of directories, with recursion.
+    2. dict with files, abs path as a key and
     3. calculate the size by summing the file sizes
     """
 
     lines = s.splitlines()
-    files: dict[tuple[str, ...], int] = {("/",): 0}
-    dirs: dict[tuple[str, ...], int] = {("/",): 0}
-    cd: list[str] = ["/"]
+    files: dict[str, int] = {'/': 0}
+    dirs: dict[str, int] = {'/': 0}
+    cd: list[str] = []
 
     for line in lines:
-        words = line.split(" ")
+        words = line.split(' ')
 
-        temp_cd = cd[:]
-        temp_cd.append(words[1])
-        if words[0] == "dir":
-            if dirs.get((tuple(temp_cd))) is None:
-                dirs[(tuple(temp_cd))] = 0
+        if words[0] == 'dir':
+            temp_cd = cd + [words[1]]
+            if dirs.get('/'.join(temp_cd)) is None:
+                dirs['/'.join(temp_cd)] = 0
 
         elif words[0].isdigit():
-            if files.get(tuple(temp_cd)) is None:
-                files[tuple(temp_cd)] = int(words[0])
+            temp_cd = cd + [words[1]]
+            if files.get('/'.join(temp_cd)) is None:
+                files['/'.join(temp_cd)] = int(words[0])
 
-        elif words[0] == "$":
-            if words[1] == "cd":
-                if words[2] == "..":
+        elif words[0] == '$':
+            if words[1] == 'cd':
+                if words[2] == '..':
                     cd.pop()
-                elif words[2] == "/":
-                    cd = ["/"]
+                elif words[2] == '/':
+                    cd = ['']
                 else:
                     cd.append(words[2])
 
-    for dr in sorted(list(dirs.keys()), key=lambda x: len(x), reverse=True):
+    for dr in dirs.keys():
         for key, size in files.items():
-            if set(dr).issubset(set(key)):
+            if dr in key:
                 dirs[dr] += size
         print(dr, dirs[dr])
 
-    return sum((v for _, v in dirs.items() if v <= 100_000))
+    return sum((v for _, v in dirs.items() if v < 100_000))
 
 
 INPUT_S = """\
@@ -83,7 +83,7 @@ EXPECTED = 95437
 
 
 @pytest.mark.parametrize(
-    ("input_s", "expected"),
+    ('input_s', 'expected'),
     ((INPUT_S, EXPECTED),),
 )
 def test(input_s: str, expected: int) -> None:
@@ -92,7 +92,7 @@ def test(input_s: str, expected: int) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("data_file", nargs="?", default=INPUT_TXT)
+    parser.add_argument('data_file', nargs='?', default=INPUT_TXT)
     args = parser.parse_args()
 
     with open(args.data_file) as f, support.timing():
@@ -101,5 +101,5 @@ def main() -> int:
     return 0
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     raise SystemExit(main())
