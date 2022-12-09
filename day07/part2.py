@@ -16,11 +16,13 @@ def compute(s: str) -> int:
     1. parse line to determine input vs output
     2. dict with files, abs path as a key and
     3. calculate the size by summing the file sizes
+
+    Part 2
     """
 
     lines = s.splitlines()
-    files: dict[str, int] = {}
-    dirs: dict[str, int] = {}
+    files: dict[str, int] = {"/": 0}
+    dirs: dict[str, int] = {"/": 0}
     cd: list[str] = []
 
     for line in lines:
@@ -47,10 +49,15 @@ def compute(s: str) -> int:
 
     for dr in dirs:
         for key, size in files.items():
-            if dr in "/".join(key.split("/")[:-1]):
+            # dealing with root files
+            if dr == "/" and "/".join(key.split("/")[:-1]) == "":
+                dirs[dr] += size
+            elif dr in "/".join(key.split("/")[:-1]):
                 dirs[dr] += size
 
-    return sum((v for _, v in dirs.items() if v < 100_000))
+    curr_unused = 70_000_000 - dirs["/"]
+    candidate_dirs = {k: v for k, v in dirs.items() if (v + curr_unused) > 30_000_000}
+    return min(candidate_dirs.values())
 
 
 INPUT_S = """\
@@ -78,7 +85,7 @@ $ ls
 5626152 d.ext
 7214296 k
 """
-EXPECTED = 95437
+EXPECTED = 24933642
 
 
 @pytest.mark.parametrize(
