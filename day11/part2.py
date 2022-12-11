@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import math
 import os.path
 from dataclasses import dataclass
 from pprint import pprint
@@ -22,12 +23,15 @@ class Monkey:
     count: int = 0
 
 
-STEPS = 20
+STEPS = 10_000
 
 
 def compute(s: str) -> int:
     """Part 1.
     1. parse input
+
+    Part 2
+
     """
     lines = s.splitlines()
     monkeys: list[Monkey] = []
@@ -42,6 +46,8 @@ def compute(s: str) -> int:
             )
             monkeys.append(m)
 
+    lcm = math.prod([_.test for _ in monkeys])
+
     for _ in range(STEPS):
         for m in monkeys:
             if m.items:
@@ -54,23 +60,13 @@ def compute(s: str) -> int:
                             new_item = item * item
                         else:
                             new_item = item * int(operand)
-                    elif operator == "/":
-                        if operand == "old":
-                            new_item = item / item
-                        else:
-                            new_item = item / int(operand)
                     elif operator == "+":
                         if operand == "old":
                             new_item = item + item
                         else:
                             new_item = item + int(operand)
-                    elif operator == "-":
-                        if operand == "old":
-                            new_item = item - item
-                        else:
-                            new_item = item - int(operand)
 
-                    new_item = int(new_item / 3)
+                    new_item = new_item % lcm
 
                     if new_item % m.test == 0:
                         monkeys[m.is_true].items.append(new_item)
@@ -112,7 +108,7 @@ Monkey 3:
     If true: throw to monkey 0
     If false: throw to monkey 1
 """
-EXPECTED = 10605
+EXPECTED = 2713310158
 
 
 @pytest.mark.parametrize(
